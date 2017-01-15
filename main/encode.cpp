@@ -1,5 +1,6 @@
 #include "lsb_watermarking.h"
 #include <cstring>
+
 using namespace std;
 using namespace cv;
 
@@ -28,16 +29,15 @@ int main(int argc, const char *argv[]) {
 
     auto image = load_image(argv[1]);
     if (image == nullptr) {
-        cout << "Error loading image\n";
+        cout << "Error when loading image\nExitting...\n";
         return -1;
     }
+
     Mat gray_image;
     cvtColor( *image, gray_image, CV_BGR2GRAY);
     vector<int> numbers = parse_numbers(argc, argv);
     hide_numbers(gray_image, numbers);
-    Mat gray_3channels;
-    cvtColor( gray_image, gray_3channels, CV_GRAY2BGR);
-    imwrite("gray.bmp", gray_3channels);
+    imwrite("gray.bmp", gray_image);
     cout << "Encoded image written as gray.bmp\n";
 
     return 0;

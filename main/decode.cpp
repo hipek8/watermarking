@@ -1,4 +1,3 @@
-
 #include "lsb_watermarking.h"
 
 using namespace std;
@@ -10,15 +9,12 @@ int main(int argc, const char *argv[]) {
      return -1;
     }
 
-    auto image = load_image(argv[1]);
-    if (image == nullptr) {
-        cout << "Error loading image\n";
+    auto gray_image = load_gray(argv[1]);
+    if (gray_image == nullptr) {
+        cout << "Error when loading image\nExitting...\n";
         return -1;
     }
-    Mat gray_image;
-    cvtColor( *image, gray_image, CV_BGR2GRAY);
-
-    Mat decoded = decode(gray_image);
+    Mat decoded = decode(*gray_image);
     imwrite("decoded.bmp", decoded);
     cout << "Decoded image written as decoded.bmp\n";
 

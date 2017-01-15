@@ -5,13 +5,13 @@ using namespace cv;
 
 unique_ptr<Mat> load_some(const char *name, int flags) {
     auto image = make_unique<Mat>(imread(name, flags));   // Read the file
-    if( !image->data )                                                  // Check for invalid input
+    if( !image->data )                                    // Check for invalid input
     {
-        cout <<  "Could not open or find the image" << std::endl ;
         return nullptr;
     }
     return image;
 }
+
 unique_ptr<Mat> load_gray(const char *name) {
     return load_some(name, 0);
 };
