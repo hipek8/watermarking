@@ -1,7 +1,8 @@
-#include "lsb_watermarking.h"
+#include "WatermarkDecoder.h"
 
 using namespace std;
 using namespace cv;
+
 int main(int argc, const char *argv[]) {
     if( argc != 2 )
     {
@@ -9,14 +10,13 @@ int main(int argc, const char *argv[]) {
      return -1;
     }
 
-    auto gray_image = load_gray(argv[1]);
-    if (gray_image == nullptr) {
-        cout << "Error when loading image\nExitting...\n";
+    try {
+        WatermarkDecoder decoder(argv[1]);
+        decoder.decode("decoded.bmp");
+        cout << "Decoded image written as decoded.bmp\n";
+    } catch (...) {
         return -1;
     }
-    Mat decoded = decode(*gray_image);
-    imwrite("decoded.bmp", decoded);
-    cout << "Decoded image written as decoded.bmp\n";
 
     
 }

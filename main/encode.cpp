@@ -1,4 +1,4 @@
-#include "lsb_watermarking.h"
+#include "WatermarkEncoder.h"
 #include <cstring>
 
 using namespace std;
@@ -21,24 +21,20 @@ vector<int> parse_numbers(int argc, const char *argv[]) {
 
 
 int main(int argc, const char *argv[]) {
-    if( argc < 2 )
+    if( argc < 3 )
     {
-     cout <<" Usage: encode <picture-file> [<digits to hide> ...]" << endl;
+     cout <<" Usage: encode <picture-file> <digits to hide> ..." << endl;
      return -1;
     }
+    try {
+        auto enc = WatermarkEncoder(argv[1]);
+        vector<int> numbers = parse_numbers(argc, argv);
 
-    auto image = load_image(argv[1]);
-    if (image == nullptr) {
-        cout << "Error when loading image\nExitting...\n";
+        enc.encode(numbers, "gray.bmp");
+        cout << "Encoded image written as gray.bmp\n";
+
+        return 0;
+    } catch (...) {
         return -1;
     }
-
-    Mat gray_image;
-    cvtColor( *image, gray_image, CV_BGR2GRAY);
-    vector<int> numbers = parse_numbers(argc, argv);
-    hide_numbers(gray_image, numbers);
-    imwrite("gray.bmp", gray_image);
-    cout << "Encoded image written as gray.bmp\n";
-
-    return 0;
 }
