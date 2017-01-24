@@ -10,10 +10,9 @@ WatermarkEncoder::WatermarkEncoder(const char* filename) {
         throw 15;
     }
     
-    cvtColor( *image, _gray_image, CV_BGR2GRAY);
-
-    _numbers_per_row = _gray_image.cols / _x_gap;
-    _max_rows = _gray_image.rows / _y_gap;
+    _dest_image = *image;
+    _numbers_per_row = _dest_image.cols / _x_gap;
+    _max_rows = _dest_image.rows / _y_gap;
     _max_numbers = _max_rows * _numbers_per_row;
 
 }
@@ -23,7 +22,7 @@ bool WatermarkEncoder::encode(vector<int> numbers, const char* dest_file) {
     hide_numbers(numbers);
 
     try {
-        imwrite(dest_file, _gray_image);
+        imwrite(dest_file, _dest_image);
     } catch (runtime_error& ex) {
         return false;
     }
@@ -50,7 +49,7 @@ bool WatermarkEncoder::hide_numbers(vector<int> numbers) {
 }
 
 void WatermarkEncoder::hide_single_number(Mat& block, int number) {
-    Mat new_block = Mat::zeros(block.rows, block.cols,CV_8UC(1));
+    Mat new_block = Mat::zeros(block.rows, block.cols,CV_8UC(3));
     bool lsb;
     for (int y=0; y<block.rows; y++) {
         for (int x=0; x<block.cols; x++) {
@@ -59,8 +58,9 @@ void WatermarkEncoder::hide_single_number(Mat& block, int number) {
             } catch (...) {
                 lsb = 0;
             }
-            new_block.at<char>(y,x) = (block.at<char>(y,x) & 254) | lsb;
-            block.at<char>(y,x) = new_block.at<char>(y,x);
+            Vec3b intensity = block.at<Vec3b>(y,x);
+            intensity.val[0] = (intensity.val[0] & 254) | lsb;
+            block.at<Vec3b>(y,x) = intensity;
         }
     }
     
@@ -72,7 +72,7 @@ void WatermarkEncoder::substitute_block(Mat& block, int start_x, int start_y) {
         for (int x = 0; x < _x_gap; x++) {
             int x_src = start_x + x;
             int y_src = start_y + y;
-            _gray_image.at<char>(y_src,x_src) = block.at<char>(y, x);
+            _dest_image.at<Vec3b>(y_src,x_src) = block.at<Vec3b>(y, x);
         }
     }
 
@@ -82,13 +82,13 @@ Mat WatermarkEncoder::load_nth_block(int n) {
     int start_x, start_y;
     tie(start_x, start_y) = xy_of_nth_block(n);
 
-    Mat block = Mat::zeros(_y_gap, _x_gap, CV_8UC(1));
+    Mat block = Mat::zeros(_y_gap, _x_gap, CV_8UC(3));
 
     for (int y = 0; y < _y_gap; y++) {
         for (int x = 0; x < _x_gap; x++) {
             int x_src = start_x + x;
             int y_src = start_y + y;
-            block.at<char>(y,x) = _gray_image.at<char>(y_src, x_src);
+            block.at<Vec3b>(y,x) = _dest_image.at<Vec3b>(y_src, x_src);
         }
     }
        

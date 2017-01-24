@@ -1,4 +1,6 @@
 #include "lsb_watermarking.h"
+#include "gtest/gtest_prod.h"
+#include <map>
 
 class WatermarkEncoder {
 public:
@@ -29,7 +31,7 @@ private:
     int _max_rows;
     int _max_numbers;
 
-    cv::Mat _gray_image;
+    cv::Mat _dest_image;
 
     // hides given number on least significant bits of given image block
     void hide_single_number(cv::Mat&, int);
@@ -46,5 +48,4 @@ private:
     // puts given block into original image
     void substitute_block(cv::Mat&, int, int);
 
-    
 };

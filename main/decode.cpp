@@ -12,8 +12,8 @@ int main(int argc, const char *argv[]) {
 
     try {
         WatermarkDecoder decoder(argv[1]);
-        decoder.decode("decoded.bmp");
-        cout << "Decoded image written as decoded.bmp\n";
+        decoder.decode("img_decoded.bmp");
+        cout << "Decoded image written as img_decoded.bmp\n";
     } catch (...) {
         return -1;
     }

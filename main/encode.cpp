@@ -30,8 +30,8 @@ int main(int argc, const char *argv[]) {
         auto enc = WatermarkEncoder(argv[1]);
         vector<int> numbers = parse_numbers(argc, argv);
 
-        enc.encode(numbers, "gray.bmp");
-        cout << "Encoded image written as gray.bmp\n";
+        enc.encode(numbers, "img_encoded.bmp");
+        cout << "Encoded image written as img_encoded.bmp\n";
 
         return 0;
     } catch (...) {
